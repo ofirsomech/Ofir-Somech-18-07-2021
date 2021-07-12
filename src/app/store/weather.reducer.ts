@@ -112,6 +112,12 @@ const weatherReducer = createReducer(
       ...state,
       autocompleteData: [],
     })
+  }),
+  on(WeatherActions.getDailyWeatherSuccess, (state, action) => {
+    return ({
+      ...state,
+      currentDailyWeather: action.city,
+    })
   })
 );
 
