@@ -13,6 +13,13 @@ const ADD_FAVORITE = 'ADD_FAVORITE';
 const REMOVE_FAVORITE = 'REMOVE_FAVORITE';
 const CHECK_IS_IN_FAVORITES = 'CHECK_IS_IN_FAVORITES';
 const LOAD_WEATHER_FROM_FAVORITES = 'LOAD_WEATHER_FROM_FAVORITES';
+const AUTOCOMPLETE_WEATHER_DATA = "AUTOCOMPLETE_WEATHER_DATA";
+const AUTOCOMPLETE_WEATHER_DATA_SUCCESSS="AUTOCOMPLETE_WEATHER_DATA_SUCCESSS"
+const AUTOCOMPLETE_WEATHER_DATA_ERROR = "AUTOCOMPLETE_WEATHER_DATA_ERROR"
+const  GET_DAILY_WEATHER = "GET_DAILY_WEATHER"
+const  GET_DAILY_WEATHER_SUCCESS = "GET_DAILY_WEATHER_SUCCESS"
+const  GET_DAILY_WEATHER_ERROR= "GET_DAILY_WEATHER_ERROR"
+const CLEAR_AUTO_COMPLETE ="CLEAR_AUTO_COMPLETE"
 
 
 
@@ -73,35 +80,50 @@ export const LoadWeatherFromFavorites = createAction(
 );
 
 export const autocompleteWeatherData = createAction(
-  "AUTOCOMPLETE_WEATHER_DATA",
+  AUTOCOMPLETE_WEATHER_DATA,
   props<{ querySearch: string }>()
 );
 
 export const autocompleteWeatherDataSuccess = createAction(
-  "AUTOCOMPLETE_WEATHER_DATA_SUCCESSS",
+  AUTOCOMPLETE_WEATHER_DATA_SUCCESSS,
   props<{ autocomplete: Autocomplete[] }>()
 );
 
 export const autocompleteWeatherDataError = createAction(
-  "AUTOCOMPLETE_WEATHER_DATA_ERROR"
+  AUTOCOMPLETE_WEATHER_DATA_ERROR
 );
 
 export const getDailyWeather = createAction(
-  "getDailyWeather",
+  GET_DAILY_WEATHER,
   props<{ fetchedCityIndex: any, selected: Autocomplete }>()
 );
 
 export const getDailyWeatherSuccess = createAction(
-  "getDailyWeather success",
+  GET_DAILY_WEATHER_SUCCESS,
   props<{ city: City }>()
 );
 
 export const getDailyWeatherError = createAction(
-  "getDailyWeather error"
+  GET_DAILY_WEATHER_ERROR
 );
 
+export const getForecastWeather = createAction(
+  "getForecastWeather",
+  props<{ fetchedCityIndex: any, selected: Autocomplete }>()
+);
+
+export const getForecastWeatherSuccess = createAction(
+  "getForecastWeather SUCCESS",
+  props<{ city: City }>()
+);
+
+export const getForecastWeatherError = createAction(
+  "getForecastWeather ERROR"
+);
+
+
 export const clearAllAutocomplete = createAction(
-  "CLEAR_AUTO_COMPLETE"
+  CLEAR_AUTO_COMPLETE
 );
 
 
