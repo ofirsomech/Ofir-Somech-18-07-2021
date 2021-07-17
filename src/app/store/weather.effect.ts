@@ -24,6 +24,8 @@ export class WeatherEffects {
     loadAutoCompleteData$ = createEffect(() => this.actions$.pipe(
         ofType(actions.autocompleteWeatherData),
         switchMap(({ querySearch }) => {
+            if (!querySearch)
+                return of({ cities: [], querySearch })
             return from(this.storageService.getCities(querySearch).then(
                 async cities => {
                     if (cities)
@@ -31,7 +33,7 @@ export class WeatherEffects {
                     const allCitiesOptions = await this.checkPreviousSearchs(querySearch).then(
                         previousSearch => this.storageService.getCities(previousSearch)
                     )
-                    return allCitiesOptions ? allCitiesOptions.filter(c => c.name.toLowerCase().includes(querySearch.toLowerCase())) : null
+                    return allCitiesOptions ? allCitiesOptions.filter(c => c.name?.toLowerCase().includes(querySearch.toLowerCase())) : null
                 })
             ).pipe(
                 map(cities => ({ cities, querySearch }))
@@ -65,6 +67,8 @@ export class WeatherEffects {
     getDailyWeather$ = createEffect(() => this.actions$.pipe(
         ofType(actions.getDailyWeather),
         switchMap(({ fetchedCityIndex, selected }) => {
+            console.log(fetchedCityIndex);
+            
             return this.api.getDailyWeather(fetchedCityIndex)
                 .pipe(
                     map((dailyWeatherData) => dailyWeatherData.map(dwDTO => this.mapperService.mapDailyWeatherDTO(dwDTO, selected))),
@@ -73,12 +77,36 @@ export class WeatherEffects {
         }
         ),
         map((dailyWeatherData: DailyWeather[] | undefined) => {
+            console.log(dailyWeatherData);
+            
             if (dailyWeatherData) {
                 return actions.UpdateDailyWeather({ currentDailyWeather: dailyWeatherData[0] })
             }
             return actions.getDailyWeatherError();
         })
     ));
+
+    // getForecastWeather$ = createEffect(() => this.actions$.pipe(
+    //     ofType(actions.getDailyWeather),
+    //     switchMap(({ fetchedCityIndex, selected }) => {
+    //         console.log(fetchedCityIndex);
+            
+    //         return this.api.getForecastWeather(fetchedCityIndex)
+    //             .pipe(
+    //                 map((forecastWeatherData) => forecastWeatherData.map(dwDTO => this.mapperService.mapDailyWeatherDTO(dwDTO, selected))),
+    //                 catchError(err => of(undefined))
+    //             )
+    //     }
+    //     ),
+    //     map((dailyWeatherData: DailyWeather[] | undefined) => {
+    //         console.log(dailyWeatherData);
+            
+    //         if (dailyWeatherData) {
+    //             return actions.UpdateDailyWeather({ currentDailyWeather: dailyWeatherData[0] })
+    //         }
+    //         return actions.getDailyWeatherError();
+    //     })
+    // ));
 
     async checkPreviousSearchs(query: string) {
         for (let i = 0; i < query.length; i++) {

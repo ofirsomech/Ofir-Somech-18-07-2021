@@ -26,4 +26,5 @@ export class MapperService {
       weatherIcon: dw.WeatherIcon < 10 ? (0 + (dw.WeatherIcon).toString()) : (dw.WeatherIcon).toString()
     }
   }
+
 }

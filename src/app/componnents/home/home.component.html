@@ -1,0 +1,34 @@
+<div class="card align-items-center">
+    <sc-autocomplete [selectedCity]="selectedCity"></sc-autocomplete>
+</div>
+<button class="mode-switcher" (click)="switchMode(mode)">Mode: {{mode}}</button>
+
+<p>{{currentDailyWeather$ | async}}</p>
+<div *ngIf="currentDailyWeather?.fetchedCityName" class="card align-items-center">
+    <div class="row">
+        <div class="mx-auto">
+          <div class="card" @fade>
+            <div class="card-body text-center" style="min-width: 183px">
+              <img src="https://developer.accuweather.com/sites/default/files/{{currentDailyWeather?.weatherIcon}}-s.png">
+              <h5 class="card-title">{{currentDailyWeather?.fetchedCityName}}</h5>
+              <h6 class="card-text">{{currentDailyWeather?.dailyTemperature}} C°</h6>
+              <h6>{{currentDailyWeather?.weatherText}}</h6>
+            </div>
+          </div>
+          <!-- <button @fade *ngIf="!isInFavorites; else showRemoveFromFavorites" type="button"
+            class="btn btn-info mt-5 mb-5 btn-block" (click)="AddToFavorites()">Add to favorites</button> -->
+          <!-- <ng-template #showRemoveFromFavorites>
+            <button @fade type="button" class="btn btn-danger mt-5 mb-5 btn-block" (click)="removeFromFavorites()">Remove
+              from favorites</button></ng-template> -->
+        </div>
+      </div>
+    <!-- <sc-card [currentDailyWeather]="currentDailyWeather"></sc-card> -->
+</div>
+<div>
+    <h2 class="text-align">5 Days</h2>
+  </div>
+<div class="row">
+    <div *ngFor="let day of DailyForecasts?.DailyForecasts" class="card" style="width: 18rem;">
+        <sc-card [isDaily]='true' [day]='day'></sc-card>
+    </div>
+</div>

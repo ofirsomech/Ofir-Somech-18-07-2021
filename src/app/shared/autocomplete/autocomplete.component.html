@@ -1,0 +1,9 @@
+
+  <mat-form-field>
+    <input [(ngModel)]="input" type="text" matInput placeholder="Choose City" (keyup)="search()" [matAutocomplete]="auto">
+  </mat-form-field>
+<mat-autocomplete (optionSelected)="selected($event)" autoActiveFirstOption #auto="matAutocomplete">
+  <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option.name" [attr.test]="option">
+    {{option.name}}
+  </mat-option>
+</mat-autocomplete>
