@@ -15,6 +15,9 @@ import { HomeComponent } from './componnents/home/home.component';
 import { FavoriteComponent } from './componnents/favorite/favorite.component';
 import { NavbarComponent } from './componnents/navbar/navbar.component';
 import { SharedModule } from './modules/shared/shared.module';
+import { DailyWeatherCardComponent } from './componnents/daily-weather-card/daily-weather-card.component';
+import { ForecastWeatherCardComponent } from './componnents/forecast-weather-card/forecast-weather-card.component';
+
 
 @NgModule({
   declarations: [
@@ -22,6 +25,8 @@ import { SharedModule } from './modules/shared/shared.module';
     HomeComponent,
     FavoriteComponent,
     NavbarComponent,
+    DailyWeatherCardComponent,
+    ForecastWeatherCardComponent,
 
   ],
   imports: [

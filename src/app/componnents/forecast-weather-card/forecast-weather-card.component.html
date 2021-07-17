@@ -1,0 +1,4 @@
+<img src="../../../assets/icons/{{day?.Day?.Icon}}-s.png">
+<h5 class="card-title">{{day?.Date | date: 'dd/MM/yyyy'}}</h5>
+<h6 class="card-text">{{day?.Temperature?.Minimum?.Value| weatherDegree : isCelsios }} /
+    {{day?.Temperature?.Maximum?.Value| weatherDegree : isCelsios}}</h6>

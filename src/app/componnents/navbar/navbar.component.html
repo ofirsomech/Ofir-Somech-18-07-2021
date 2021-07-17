@@ -8,13 +8,22 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item ">
-          <a class="nav-link" routerLink="/home" routerLinkActive="active">Home</a>
+          <a class="nav-link" routerLink="/home" routerLinkActive="active">Home</a> 
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/favorite" routerLinkActive="active">Favorites</a>
+          <a class="nav-link" routerLink="/favorite" routerLinkActive="active">Favorites</a> 
         </li>
         <li class="nav-item">
-          <a class="nav-link" (click)="changeDagree()">{{isCelsios ? "celsius":"f"}}</a>
+          <section class="example-section">
+            <mat-radio-group [(ngModel)]="isCelsios" (change)="changeDagree()">
+              <mat-radio-button class="example-margin" [value]="true" >
+                celsius
+              </mat-radio-button>
+              <mat-radio-button class="example-margin"[value]="false">
+                fahrenheit
+              </mat-radio-button>
+            </mat-radio-group>
+          </section>
         </li>
       </ul>
     </div>

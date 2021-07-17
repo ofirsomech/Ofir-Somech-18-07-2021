@@ -5,24 +5,29 @@ import { CardComponent } from './card/card.component';
 import { WeatherDegreePipe } from './pipes/weather-degree.pipe';
 import { MaterialModule } from '../material/material.module';
 import { FormsModule } from '@angular/forms';
+import { LoaderComponent } from './loader/loader.component';
 
 
 @NgModule({
   declarations: [
     AutocompleteComponent,
     CardComponent,
-    WeatherDegreePipe
+    WeatherDegreePipe,
+    LoaderComponent,
+
   ],
   imports: [
     FormsModule,
     CommonModule,
-    MaterialModule
+    MaterialModule,
+
   ],
   exports:[
     AutocompleteComponent,
     CardComponent,
     WeatherDegreePipe,
-    MaterialModule
+    MaterialModule,
+    LoaderComponent
   ]
 })
 export class SharedModule { }

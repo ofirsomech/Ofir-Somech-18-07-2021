@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
   selectedCity: Autocomplete = {};
   filteredCities$!: Observable<Autocomplete[]>;
   ilteredCities: Autocomplete[] = [];
-  a$!: Observable<{
+  data$!: Observable<{
     dailyWeather: DailyWeather | undefined,
     weatherForcast: DailyForecast[] | undefined
   }>;
@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.isCelsios$ = this.store.select(getIsCelsiusDagree);
-    this.a$ = combineLatest(this.store.select(getCurrentDailyWeather), this.store.select(getCurrentWeatherForecast)).pipe(
+    this.data$ = combineLatest(this.store.select(getCurrentDailyWeather), this.store.select(getCurrentWeatherForecast)).pipe(
       map(([dailyWeather, weatherForcast]) => ({
         dailyWeather,
         weatherForcast
