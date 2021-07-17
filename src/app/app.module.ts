@@ -21,13 +21,18 @@ import {MatTableModule} from '@angular/material/table';
 import { AutocompleteComponent } from './shared/autocomplete/autocomplete.component';
 import { HomeComponent } from './componnents/home/home.component';
 import { CardComponent } from './shared/card/card.component';
+import { FavoriteComponent } from './componnents/favorite/favorite.component';
+import { NavbarComponent } from './componnents/navbar/navbar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AutocompleteComponent,
     HomeComponent,
-    CardComponent
+    CardComponent,
+    // LoaderComponent,
+    FavoriteComponent,
+    NavbarComponent
 
   ],
   imports: [

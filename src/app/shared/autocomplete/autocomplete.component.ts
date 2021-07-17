@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { flatMap, map, startWith, tap } from 'rxjs/operators';
 import { Autocomplete } from 'src/app/models/autocomplete.model';
-import { autocompleteWeatherData, getDailyWeather } from 'src/app/store/weather.actions';
+import { autocompleteWeatherData, CheckIsInFavorites, getDailyWeather } from 'src/app/store/weather.actions';
 import { getAutocompleteSelector } from 'src/app/store/weather.reducer';
 
 @Component({
@@ -19,7 +19,7 @@ export class AutocompleteComponent implements OnInit {
   input: string = "";
   filteredOptions$!: Observable<Autocomplete[]>;
   filteredOptions: Autocomplete[] = [];
-  @Input() selectedCity :Autocomplete | undefined;
+  @Input() selectedCity: Autocomplete | undefined;
   constructor(private store: Store) {
   }
 
@@ -34,8 +34,11 @@ export class AutocompleteComponent implements OnInit {
     const name = event.option.value;
     this.selectedCity = this.filteredOptions.find(auto => auto.name === name)
     console.log(this.selectedCity);
-    
-    this.store.dispatch(getDailyWeather({ fetchedCityIndex: this.selectedCity?.key, selected: this.selectedCity || { name, key: 0 } }))
+
+    if (this.selectedCity && this.selectedCity.key) {
+      this.store.dispatch(getDailyWeather({ fetchedCityIndex: this.selectedCity.key, selected: this.selectedCity || { name, key: 0 } }))
+      this.store.dispatch(CheckIsInFavorites({ fetchedCityIndex: this.selectedCity.key }))
+    }
 
   }
   search() {

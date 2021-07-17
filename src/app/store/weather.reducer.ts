@@ -1,5 +1,5 @@
 import * as WeatherActions from './weather.actions';
-import { WeatherForecast, DailyWeather } from '../models/weather.model';
+import { DailyWeather, DailyForecast } from '../models/weather.model';
 import { Autocomplete } from '../models/autocomplete.model';
 import { on, createReducer, Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
@@ -13,9 +13,9 @@ export interface State {
   isInFavorites: boolean,
 
   currentDailyWeather: DailyWeather,
-  currentWeatherForecast: WeatherForecast[],
+  currentWeatherForecast: DailyForecast[],
   favoritesDailyWeather: DailyWeather[],
-  favoritesForecastWeather: WeatherForecast[][],
+  favoritesForecastWeather: DailyForecast[][],
 }
 
 const initialState: State = {
@@ -40,6 +40,11 @@ export const mainState = createFeatureSelector<State>("weather");
 
 export const getAutocompleteSelector = createSelector(mainState, (s) => s.autocompleteData)
 export const getCurrentDailyWeather = createSelector(mainState, (s) => s.currentDailyWeather)
+export const getCurrentWeatherForecast = createSelector(mainState, (s) => s.currentWeatherForecast)
+export const getForecastLoading = createSelector(mainState, (s) => s.isForecastLoading)
+export const getDailyLoading = createSelector(mainState, (s) => s.isDailyLoading)
+export const getFavoritesDailyWeather = createSelector(mainState, (s) => s.favoritesDailyWeather)
+export const isInFavorites = createSelector(mainState, (s) => s.isInFavorites)
 
 
 const weatherReducer = createReducer(
@@ -73,7 +78,7 @@ const weatherReducer = createReducer(
   on(WeatherActions.AddFavorite, (state, action) => {
     return ({
       ...state,
-      favoritesList: [...state.favoritesList, action.favoritesDailyWeather.fetchedCityIndex],
+      // favoritesList: [...state.favoritesList, action.favoritesDailyWeather.fetchedCityIndex],
       isInFavorites: true,
       favoritesDailyWeather: [...state.favoritesDailyWeather, action.favoritesDailyWeather],
       favoritesForecastWeather: [...state.favoritesForecastWeather, action.currentWeatherForecast]

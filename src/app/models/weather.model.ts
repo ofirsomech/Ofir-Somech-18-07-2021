@@ -26,18 +26,12 @@ export interface ForecastsWeather{
   DailyForecasts: DailyForecast[];
 }
 
-export interface WeatherForecast {
-  temperature: number;
-  date: string;
-  weatherIcon: string;
-}
-
 export interface DailyWeather {
   fetchedCityIndex?: number,
   fetchedCityName?: string,
   dailyTemperature?: number,
-  weatherText: string,
-  weatherIcon: string,
+  weatherText?: string,
+  weatherIcon?: string,
 }
 
 export interface Country {

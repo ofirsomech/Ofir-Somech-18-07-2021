@@ -67,22 +67,33 @@ export class WeatherEffects {
     getDailyWeather$ = createEffect(() => this.actions$.pipe(
         ofType(actions.getDailyWeather),
         switchMap(({ fetchedCityIndex, selected }) => {
-            console.log(fetchedCityIndex);
-            
             return this.api.getDailyWeather(fetchedCityIndex)
                 .pipe(
-                    map((dailyWeatherData) => dailyWeatherData.map(dwDTO => this.mapperService.mapDailyWeatherDTO(dwDTO, selected))),
-                    catchError(err => of(undefined))
+                    map((dailyWeatherData) => ({
+                        dailyWeatherData: dailyWeatherData.map(dwDTO => this.mapperService.mapDailyWeatherDTO(dwDTO, selected)), fetchedCityIndex, selected
+                    })),
+                    catchError(err => of({ fetchedCityIndex, selected, dailyWeatherData: undefined }))
+                )
+        }),
+        switchMap(({ fetchedCityIndex, selected, dailyWeatherData }) => {
+
+            return this.api.getForecastWeather(fetchedCityIndex)
+                .pipe(
+                    map((data) => ({
+                        dailyWeatherData, data
+                    })),
+                    catchError(err => of({ dailyWeatherData, data: null }))
                 )
         }
         ),
-        map((dailyWeatherData: DailyWeather[] | undefined) => {
-            console.log(dailyWeatherData);
-            
-            if (dailyWeatherData) {
-                return actions.UpdateDailyWeather({ currentDailyWeather: dailyWeatherData[0] })
+        switchMap(({ dailyWeatherData, data }) => {
+            if (dailyWeatherData && data?.DailyForecasts) {
+                return [
+                    actions.UpdateDailyWeather({ currentDailyWeather: dailyWeatherData[0] }),
+                    actions.UpdateForecastWeather({ currentWeatherForecast: data.DailyForecasts }),
+                ]
             }
-            return actions.getDailyWeatherError();
+            return [actions.getDailyWeatherError()];
         })
     ));
 
@@ -90,7 +101,7 @@ export class WeatherEffects {
     //     ofType(actions.getDailyWeather),
     //     switchMap(({ fetchedCityIndex, selected }) => {
     //         console.log(fetchedCityIndex);
-            
+
     //         return this.api.getForecastWeather(fetchedCityIndex)
     //             .pipe(
     //                 map((forecastWeatherData) => forecastWeatherData.map(dwDTO => this.mapperService.mapDailyWeatherDTO(dwDTO, selected))),
@@ -100,7 +111,7 @@ export class WeatherEffects {
     //     ),
     //     map((dailyWeatherData: DailyWeather[] | undefined) => {
     //         console.log(dailyWeatherData);
-            
+
     //         if (dailyWeatherData) {
     //             return actions.UpdateDailyWeather({ currentDailyWeather: dailyWeatherData[0] })
     //         }

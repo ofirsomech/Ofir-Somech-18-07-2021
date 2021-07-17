@@ -1,9 +1,11 @@
-<div *ngIf='!isDaily' class="card" @fade>
+<div *ngIf='!isDaily' class="card">
   <div class="card-body text-center" style="min-width: 183px">
-    <img src="https://developer.accuweather.com/sites/default/files/{{currentDailyWeather?.weatherIcon}}-s.png">
+    <img src="../../../assets/icons/{{currentDailyWeather?.weatherIcon}}-s.png">
     <h5 class="card-title">{{currentDailyWeather?.fetchedCityName}}</h5>
     <h6 class="card-text">{{currentDailyWeather?.dailyTemperature}} C°</h6>
     <h6>{{currentDailyWeather?.weatherText}}</h6>
+    <button (click)="addToFavorite()"  *ngIf="isNotInFavorites$ | async">add to favorite</button>
+    <button (click)="removeFavorite()" *ngIf="isInFavorites$ | async">remove from favorite</button>
   </div>
   <!-- <button @fade *ngIf="!isInFavorites; else showRemoveFromFavorites" type="button"
   class="btn btn-info mt-5 mb-5 btn-block" (click)="AddToFavorites()">Add to favorites</button> -->
@@ -12,9 +14,9 @@
     from favorites</button></ng-template> -->
 </div>
 
-<div *ngIf='isDaily' class="card" >
+<div *ngIf='isDaily' class="card">
   <div class="card-body text-center" style="min-width: 183px">
-    <img src="https://developer.accuweather.com/sites/default/files/{{day?.Day?.Icon}}-s.png">
+    <img src="../../../assets/icons/{{day?.Day?.Icon}}-s.png">
     <h5 class="card-title">{{day?.Date | date: 'dd/MM/yyyy'}}</h5>
     <h6 class="card-text">{{day?.Temperature?.Minimum?.Value}}'C / {{day?.Temperature?.Maximum?.Value}}'C</h6>
   </div>

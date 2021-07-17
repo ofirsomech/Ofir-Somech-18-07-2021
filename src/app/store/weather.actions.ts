@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { WeatherForecast, DailyWeather } from '../models/weather.model';
+import {  DailyWeather, DailyForecast } from '../models/weather.model';
 import { Autocomplete } from '../models/autocomplete.model';
 import { City } from '../models/location.model';
 
@@ -34,7 +34,7 @@ export const ShowDailySpinner = createAction(
 
 export const UpdateForecastWeather = createAction(
   UPDATE_FORECAST_WEATHER,
-  props<{ currentWeatherForecast: WeatherForecast[] }>()
+  props<{ currentWeatherForecast: DailyForecast[] }>()
 );
 
 export const ShowForecastSpinner = createAction(
@@ -52,14 +52,8 @@ export const RemoveForecastSpinner = createAction(
 export const AddFavorite = createAction(
   ADD_FAVORITE,
   props<{
-    favoritesDailyWeather: {
-      fetchedCityIndex: number,
-      weatherText: string,
-      dailyTemperature: number,
-      weatherIcon: string,
-      fetchedCityName: string
-    },
-    currentWeatherForecast: WeatherForecast[]
+    favoritesDailyWeather: DailyWeather,
+    currentWeatherForecast: DailyForecast[]
   }>()
 );
 
@@ -95,7 +89,7 @@ export const autocompleteWeatherDataError = createAction(
 
 export const getDailyWeather = createAction(
   GET_DAILY_WEATHER,
-  props<{ fetchedCityIndex: any, selected: Autocomplete }>()
+  props<{ fetchedCityIndex: number, selected: Autocomplete }>()
 );
 
 export const getDailyWeatherSuccess = createAction(

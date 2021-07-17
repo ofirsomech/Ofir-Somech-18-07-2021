@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from "../../environments/environment";
 import { Observable } from 'rxjs';
 import { Autocomplete } from '../models/autocomplete.model';
-import { AutocompleteDTO, DailyWeatherDTO } from '../models/weather.model';
+import { AutocompleteDTO, DailyWeatherDTO, ForecastsWeather } from '../models/weather.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -21,12 +21,12 @@ export class WeatherService {
     return this.http.get<AutocompleteDTO[]>(`${this.apiAutocomplete}?apikey=${this.weatherAPIKey}&q=${searchedQuery}`);
   }
 
-  getDailyWeather(fetchedCityIndex: any) : Observable<DailyWeatherDTO[]>{
+  getDailyWeather(fetchedCityIndex: any): Observable<DailyWeatherDTO[]> {
     return this.http.get<DailyWeatherDTO[]>(`${this.apiDaily}/${fetchedCityIndex}?apikey=${this.weatherAPIKey}`);
   }
 
-  getForecastWeather(fetchedCityIndex: any) {
-    return this.http.get(`${this.apiForecast}/${fetchedCityIndex}?apikey=${this.weatherAPIKey}&metric=true`);
+  getForecastWeather(fetchedCityIndex: any): Observable<ForecastsWeather> {
+    return this.http.get<ForecastsWeather>(`${this.apiForecast}/${fetchedCityIndex}?apikey=${this.weatherAPIKey}&metric=true`);
   }
 
   getGeolocation(latitude: any, longitude: any) {
