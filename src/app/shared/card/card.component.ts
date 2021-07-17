@@ -17,13 +17,10 @@ export class CardComponent implements OnInit {
   @Input() day: DailyForecast | undefined
   @Input() favoritesDailyWeather: DailyWeather | undefined;
   @Input() currentWeatherForecast: DailyForecast[] | undefined;
-  isInFavorites$: Observable<boolean> | undefined;
-  isNotInFavorites$: Observable<boolean> | undefined;
+  @Input() isInFavorites: boolean | null = false;
   constructor(private store: Store) { }
 
   ngOnInit(): void {
-    this.isInFavorites$ = this.store.select(isInFavorites)
-    this.isNotInFavorites$ = this.store.select(isInFavorites).pipe(map(isIn => !isIn))
   }
 
   addToFavorite() {
@@ -33,7 +30,7 @@ export class CardComponent implements OnInit {
 
   removeFavorite() {
     if (this.currentDailyWeather?.fetchedCityIndex)
-      this.store.dispatch(actions.RemoveFavorite({fetchedCityIndex:this.currentDailyWeather.fetchedCityIndex}))
+      this.store.dispatch(actions.RemoveFavorite({ fetchedCityIndex: this.currentDailyWeather.fetchedCityIndex }))
   }
 
 }

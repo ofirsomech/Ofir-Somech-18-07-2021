@@ -4,8 +4,8 @@
     <h5 class="card-title">{{currentDailyWeather?.fetchedCityName}}</h5>
     <h6 class="card-text">{{currentDailyWeather?.dailyTemperature}} C°</h6>
     <h6>{{currentDailyWeather?.weatherText}}</h6>
-    <button (click)="addToFavorite()"  *ngIf="isNotInFavorites$ | async">add to favorite</button>
-    <button (click)="removeFavorite()" *ngIf="isInFavorites$ | async">remove from favorite</button>
+    <button (click)="addToFavorite()"  *ngIf="!isInFavorites">add to favorite</button>
+    <button (click)="removeFavorite()" *ngIf="isInFavorites">remove from favorite</button>
   </div>
   <!-- <button @fade *ngIf="!isInFavorites; else showRemoveFromFavorites" type="button"
   class="btn btn-info mt-5 mb-5 btn-block" (click)="AddToFavorites()">Add to favorites</button> -->

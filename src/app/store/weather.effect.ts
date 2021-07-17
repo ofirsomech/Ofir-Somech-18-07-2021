@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 import { EMPTY, from, of } from 'rxjs';
 import { map, mergeMap, catchError, switchMap, tap } from 'rxjs/operators';
 import * as actions from './weather.actions';
@@ -10,9 +10,10 @@ import { ToastrService } from 'ngx-toastr';
 import { Autocomplete } from '../models/autocomplete.model';
 import { AutocompleteDTO, DailyWeather } from '../models/weather.model';
 import { MapperService } from '../services/mapper.service';
+import { Action } from '@ngrx/store';
 
 @Injectable()
-export class WeatherEffects {
+export class WeatherEffects implements OnInitEffects {
     constructor(
         private actions$: Actions,
         private api: WeatherService,
@@ -20,6 +21,10 @@ export class WeatherEffects {
         private mapperService: MapperService,
         private toastr: ToastrService,
     ) { }
+
+    ngrxOnInitEffects(): Action {
+        return actions.getCurrentCityByGeoLocation()
+    }
 
     loadAutoCompleteData$ = createEffect(() => this.actions$.pipe(
         ofType(actions.autocompleteWeatherData),
@@ -61,6 +66,36 @@ export class WeatherEffects {
             }
             this.toastr.error('An error occurred, Please try again later', 'Error!');
             return actions.autocompleteWeatherDataError()
+        })
+    ));
+
+    getCurrentCityMetadata$ = createEffect(() => this.actions$.pipe(
+        ofType(actions.getCurrentCityByGeoLocation),
+        switchMap(() => {
+
+            return of({ lat: 32, lng:  35 })
+            const geolocationPromise = new Promise<{ lat: number, lng: number }>((result, reject) => {
+                window.navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        result({
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        })
+                    }, (err) => {
+                        reject()
+                    });
+            });
+            return from(geolocationPromise);
+        }),
+        switchMap(({ lat, lng }) => {
+            console.log(lat, lng)
+            return this.api.getGeolocation(lat, lng).pipe(
+                tap(v => console.log(v)),
+                map(v => ({ fetchedCityIndex: +v.Key, selected: { key: +v.Key, name: v.LocalizedName } }))
+            );
+        }),
+        switchMap(({ fetchedCityIndex, selected }) => {
+            return [actions.getDailyWeather({ fetchedCityIndex, selected })];
         })
     ));
 

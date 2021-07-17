@@ -9,7 +9,7 @@ import { DailyForecast, DailyWeather, DailyWeatherDTO, ForecastsWeather } from '
 import { WeatherService } from 'src/app/services/weather.service';
 import { fade } from 'src/app/shared/animations/animations';
 import { getDailyWeather } from 'src/app/store/weather.actions';
-import { getAutocompleteSelector, getCurrentDailyWeather, getCurrentWeatherForecast, getForecastLoading } from 'src/app/store/weather.reducer';
+import { getAutocompleteSelector, getCurrentDailyWeather, getCurrentWeatherForecast, getForecastLoading, isInFavorites } from 'src/app/store/weather.reducer';
 
 @Component({
   selector: 'home',
@@ -33,6 +33,8 @@ export class HomeComponent implements OnInit {
 
   isForecastLoading: boolean = false;
   isDailyLoading: boolean = false;
+
+  isInFavorites$: Observable<boolean> | undefined;
   constructor(private store: Store, private weatherService: WeatherService) { }
 
   ngOnInit(): void {
@@ -45,24 +47,8 @@ export class HomeComponent implements OnInit {
       skipWhile(data => !data.dailyWeather || !data.weatherForcast)
     )
 
-
-    // this.store.select(getCurrentDailyWeather).pipe(
-    //   map(value => {
-    //     return value
-    //   }),
-    //   tap(value => {
-    //     this.isForecastLoading = true;
-    //     this.weatherService.getForecastWeather(value.fetchedCityIndex).subscribe((data: any) => {
-    //       console.log(data.DailyForecasts);
-    //       this.DailyForecasts = data;
-    //       this.isForecastLoading = false;
-    //     })
-    //     return this.currentDailyWeather = value
-    //   }),
-    // );
-    // this.currentDailyWeather$.subscribe();
-
-    this.store.select(getForecastLoading).subscribe(loader => this.isForecastLoading = loader);
+    this.isInFavorites$ = this.store.select(isInFavorites)
+    // this.store.select(getForecastLoading).subscribe(loader => this.isForecastLoading = loader);
   }
 
 }

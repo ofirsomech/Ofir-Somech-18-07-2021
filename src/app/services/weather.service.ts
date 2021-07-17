@@ -29,7 +29,7 @@ export class WeatherService {
     return this.http.get<ForecastsWeather>(`${this.apiForecast}/${fetchedCityIndex}?apikey=${this.weatherAPIKey}&metric=true`);
   }
 
-  getGeolocation(latitude: any, longitude: any) {
+  getGeolocation(latitude: any, longitude: any):Observable<any> {
     return this.http.get(`${this.apiGeoLocation}?apikey=${this.weatherAPIKey}&q=${latitude},${longitude}&toplevel=true`);
   }
 

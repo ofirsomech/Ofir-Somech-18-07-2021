@@ -8,7 +8,7 @@
     <div *ngIf="data.dailyWeather?.weatherText" class="card align-items-center">
         <div class="row">
             <div class="mx-auto">
-                <sc-card @fade [currentDailyWeather]="data.dailyWeather" [currentWeatherForecast]="data.weatherForcast"></sc-card>
+                <sc-card @fade [currentDailyWeather]="data.dailyWeather" [currentWeatherForecast]="data.weatherForcast" [isInFavorites]="isInFavorites$ | async"></sc-card>
             </div>
           </div>
     </div>
