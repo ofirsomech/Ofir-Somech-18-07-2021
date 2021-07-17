@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 import { EMPTY, from, of } from 'rxjs';
 import { map, mergeMap, catchError, switchMap, tap } from 'rxjs/operators';
 import * as actions from './weather.actions';
@@ -10,9 +10,10 @@ import { ToastrService } from 'ngx-toastr';
 import { Autocomplete } from '../models/autocomplete.model';
 import { AutocompleteDTO, DailyWeather } from '../models/weather.model';
 import { MapperService } from '../services/mapper.service';
+import { Action } from '@ngrx/store';
 
 @Injectable()
-export class WeatherEffects {
+export class WeatherEffects implements OnInitEffects {
     constructor(
         private actions$: Actions,
         private api: WeatherService,
@@ -21,9 +22,15 @@ export class WeatherEffects {
         private toastr: ToastrService,
     ) { }
 
+    ngrxOnInitEffects(): Action {
+        return actions.getCurrentCityByGeoLocation()
+    }
+
     loadAutoCompleteData$ = createEffect(() => this.actions$.pipe(
         ofType(actions.autocompleteWeatherData),
         switchMap(({ querySearch }) => {
+            if (!querySearch)
+                return of({ cities: [], querySearch })
             return from(this.storageService.getCities(querySearch).then(
                 async cities => {
                     if (cities)
@@ -31,7 +38,7 @@ export class WeatherEffects {
                     const allCitiesOptions = await this.checkPreviousSearchs(querySearch).then(
                         previousSearch => this.storageService.getCities(previousSearch)
                     )
-                    return allCitiesOptions ? allCitiesOptions.filter(c => c.name.toLowerCase().includes(querySearch.toLowerCase())) : null
+                    return allCitiesOptions ? allCitiesOptions.filter(c => c.name?.toLowerCase().includes(querySearch.toLowerCase())) : null
                 })
             ).pipe(
                 map(cities => ({ cities, querySearch }))
@@ -62,23 +69,90 @@ export class WeatherEffects {
         })
     ));
 
+    getCurrentCityMetadata$ = createEffect(() => this.actions$.pipe(
+        ofType(actions.getCurrentCityByGeoLocation),
+        switchMap(() => {
+
+            return of({ lat: 32, lng:  35 })
+            const geolocationPromise = new Promise<{ lat: number, lng: number }>((result, reject) => {
+                window.navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        result({
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        })
+                    }, (err) => {
+                        reject()
+                    });
+            });
+            return from(geolocationPromise);
+        }),
+        switchMap(({ lat, lng }) => {
+            console.log(lat, lng)
+            return this.api.getGeolocation(lat, lng).pipe(
+                tap(v => console.log(v)),
+                map(v => ({ fetchedCityIndex: +v.Key, selected: { key: +v.Key, name: v.LocalizedName } }))
+            );
+        }),
+        switchMap(({ fetchedCityIndex, selected }) => {
+            return [actions.getDailyWeather({ fetchedCityIndex, selected })];
+        })
+    ));
+
     getDailyWeather$ = createEffect(() => this.actions$.pipe(
         ofType(actions.getDailyWeather),
         switchMap(({ fetchedCityIndex, selected }) => {
             return this.api.getDailyWeather(fetchedCityIndex)
                 .pipe(
-                    map((dailyWeatherData) => dailyWeatherData.map(dwDTO => this.mapperService.mapDailyWeatherDTO(dwDTO, selected))),
-                    catchError(err => of(undefined))
+                    map((dailyWeatherData) => ({
+                        dailyWeatherData: dailyWeatherData.map(dwDTO => this.mapperService.mapDailyWeatherDTO(dwDTO, selected)), fetchedCityIndex, selected
+                    })),
+                    catchError(err => of({ fetchedCityIndex, selected, dailyWeatherData: undefined }))
+                )
+        }),
+        switchMap(({ fetchedCityIndex, selected, dailyWeatherData }) => {
+
+            return this.api.getForecastWeather(fetchedCityIndex)
+                .pipe(
+                    map((data) => ({
+                        dailyWeatherData, data
+                    })),
+                    catchError(err => of({ dailyWeatherData, data: null }))
                 )
         }
         ),
-        map((dailyWeatherData: DailyWeather[] | undefined) => {
-            if (dailyWeatherData) {
-                return actions.UpdateDailyWeather({ currentDailyWeather: dailyWeatherData[0] })
+        switchMap(({ dailyWeatherData, data }) => {
+            if (dailyWeatherData && data?.DailyForecasts) {
+                return [
+                    actions.UpdateDailyWeather({ currentDailyWeather: dailyWeatherData[0] }),
+                    actions.UpdateForecastWeather({ currentWeatherForecast: data.DailyForecasts }),
+                ]
             }
-            return actions.getDailyWeatherError();
+            return [actions.getDailyWeatherError()];
         })
     ));
+
+    // getForecastWeather$ = createEffect(() => this.actions$.pipe(
+    //     ofType(actions.getDailyWeather),
+    //     switchMap(({ fetchedCityIndex, selected }) => {
+    //         console.log(fetchedCityIndex);
+
+    //         return this.api.getForecastWeather(fetchedCityIndex)
+    //             .pipe(
+    //                 map((forecastWeatherData) => forecastWeatherData.map(dwDTO => this.mapperService.mapDailyWeatherDTO(dwDTO, selected))),
+    //                 catchError(err => of(undefined))
+    //             )
+    //     }
+    //     ),
+    //     map((dailyWeatherData: DailyWeather[] | undefined) => {
+    //         console.log(dailyWeatherData);
+
+    //         if (dailyWeatherData) {
+    //             return actions.UpdateDailyWeather({ currentDailyWeather: dailyWeatherData[0] })
+    //         }
+    //         return actions.getDailyWeatherError();
+    //     })
+    // ));
 
     async checkPreviousSearchs(query: string) {
         for (let i = 0; i < query.length; i++) {

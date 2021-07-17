@@ -1,7 +1,7 @@
 import * as WeatherActions from './weather.actions';
-import { WeatherForecast, DailyWeather } from '../models/weather.model';
+import { DailyWeather, DailyForecast } from '../models/weather.model';
 import { Autocomplete } from '../models/autocomplete.model';
-import { on, createReducer, Action } from '@ngrx/store';
+import { on, createReducer, Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
 export interface State {
   autocompleteData: Autocomplete[],
@@ -13,9 +13,9 @@ export interface State {
   isInFavorites: boolean,
 
   currentDailyWeather: DailyWeather,
-  currentWeatherForecast: WeatherForecast[],
+  currentWeatherForecast: DailyForecast[],
   favoritesDailyWeather: DailyWeather[],
-  favoritesForecastWeather: WeatherForecast[][],
+  favoritesForecastWeather: DailyForecast[][],
 }
 
 const initialState: State = {
@@ -36,16 +36,24 @@ const initialState: State = {
   favoritesForecastWeather: []
 }
 
+export const mainState = createFeatureSelector<State>("weather");
+
+export const getAutocompleteSelector = createSelector(mainState, (s) => s.autocompleteData)
+export const getCurrentDailyWeather = createSelector(mainState, (s) => s.currentDailyWeather)
+export const getCurrentWeatherForecast = createSelector(mainState, (s) => s.currentWeatherForecast)
+export const getForecastLoading = createSelector(mainState, (s) => s.isForecastLoading)
+export const getDailyLoading = createSelector(mainState, (s) => s.isDailyLoading)
+export const getFavoritesDailyWeather = createSelector(mainState, (s) => s.favoritesDailyWeather)
+export const isInFavorites = createSelector(mainState, (s) => s.isInFavorites)
+
+
 const weatherReducer = createReducer(
   initialState,
-  on(WeatherActions.UpdateDailyWeather, (state, action) => {
-    console.log(action)
-    return ({
-      ...state,
-      currentDailyWeather: action.currentDailyWeather,
-      isDailyLoading: false
-    })
-  }),
+  on(WeatherActions.UpdateDailyWeather, (state, action) => ({
+    ...state,
+    currentDailyWeather: action.currentDailyWeather,
+    isDailyLoading: false
+  })),
   on(WeatherActions.UpdateForecastWeather, (state, action) => ({
     ...state,
     currentWeatherForecast: action.currentWeatherForecast,
@@ -70,7 +78,7 @@ const weatherReducer = createReducer(
   on(WeatherActions.AddFavorite, (state, action) => {
     return ({
       ...state,
-      favoritesList: [...state.favoritesList, action.favoritesDailyWeather.fetchedCityIndex],
+      // favoritesList: [...state.favoritesList, action.favoritesDailyWeather.fetchedCityIndex],
       isInFavorites: true,
       favoritesDailyWeather: [...state.favoritesDailyWeather, action.favoritesDailyWeather],
       favoritesForecastWeather: [...state.favoritesForecastWeather, action.currentWeatherForecast]
@@ -93,32 +101,23 @@ const weatherReducer = createReducer(
     ...state,
     isInFavorites: state.favoritesList.includes(action.fetchedCityIndex)
   })),
-  on(WeatherActions.LoadWeatherFromFavorites, (state, action) => {
-    return ({
-      ...state,
-      currentDailyWeather: state.favoritesDailyWeather[action.fetchedCityIndex],
-      currentWeatherForecast: state.favoritesForecastWeather[action.fetchedCityIndex]
-    })
-  }
-  ),
-  on(WeatherActions.autocompleteWeatherDataSuccess, (state, action) => {
-    return ({
-      ...state,
-      autocompleteData: action.autocomplete,
-    })
-  }),
-  on(WeatherActions.clearAllAutocomplete, (state, action) => {
-    return ({
-      ...state,
-      autocompleteData: [],
-    })
-  }),
-  on(WeatherActions.getDailyWeatherSuccess, (state, action) => {
-    return ({
-      ...state,
-      currentDailyWeather: action.city,
-    })
-  })
+  on(WeatherActions.LoadWeatherFromFavorites, (state, action) => ({
+    ...state,
+    currentDailyWeather: state.favoritesDailyWeather[action.fetchedCityIndex],
+    currentWeatherForecast: state.favoritesForecastWeather[action.fetchedCityIndex]
+  })),
+  on(WeatherActions.autocompleteWeatherDataSuccess, (state, action) => ({
+    ...state,
+    autocompleteData: action.autocomplete,
+  })),
+  on(WeatherActions.clearAllAutocomplete, (state, action) => ({
+    ...state,
+    autocompleteData: [],
+  })),
+  on(WeatherActions.getDailyWeatherSuccess, (state, action) => ({
+    ...state,
+    currentDailyWeather: action.city,
+  }))
 );
 
 export function reducer(state: State = initialState, action: Action) {

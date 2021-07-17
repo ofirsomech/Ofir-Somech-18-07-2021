@@ -1,4 +1,4 @@
 export interface Autocomplete {
-  key: number;
-  name: string;
+  key?: number;
+  name?: string;
 }

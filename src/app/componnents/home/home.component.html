@@ -1,0 +1,28 @@
+
+<div class="card align-items-center">
+    <sc-autocomplete [selectedCity]="selectedCity"></sc-autocomplete>
+</div>
+
+
+<ng-container *ngIf="a$ | async as data">
+    <div *ngIf="data.dailyWeather?.weatherText" class="card align-items-center">
+        <div class="row">
+            <div class="mx-auto">
+                <sc-card @fade [currentDailyWeather]="data.dailyWeather" [currentWeatherForecast]="data.weatherForcast" [isInFavorites]="isInFavorites$ | async"></sc-card>
+            </div>
+          </div>
+    </div>
+    <div>
+        <h2 class="five-days-label">5 Days</h2>
+      </div>
+    <div class="row items-center" @fade>
+        <div  *ngFor="let day of data.weatherForcast"  class="card align-items-center" style="width: 18rem;">
+            <sc-card *ngIf="!isForecastLoading" [isDaily]='true' [day]='day'></sc-card>
+        </div>
+        <!-- <sc-loader *ngIf="isForecastLoading"></sc-loader> -->
+    </div>
+</ng-container>
+
+<!-- <p>{{currentDailyWeather$ | async}}</p> -->
+
+

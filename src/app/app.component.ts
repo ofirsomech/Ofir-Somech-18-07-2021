@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Mode } from './models/mode.enum';
 import * as actions from "./store/weather.actions";
@@ -9,15 +10,12 @@ import * as actions from "./store/weather.actions";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  ngOnInit(): void {
-    this.store.dispatch(actions.autocompleteWeatherData({querySearch:"tel a"}));
-   }
-  constructor(private store:Store){
-  }
   title = 'weather';
-
-  
   mode = Mode.Light;
+  ngOnInit(): void {
+  }
+  constructor(private store: Store) {
+  }
 
   switchMode(mode: Mode) {
     if (mode === Mode.Light) {
@@ -31,5 +29,4 @@ export class AppComponent implements OnInit {
     }
   }
 
-  
 }

@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { WeatherForecast, DailyWeather } from '../models/weather.model';
+import { DailyWeather, DailyForecast } from '../models/weather.model';
 import { Autocomplete } from '../models/autocomplete.model';
 import { City } from '../models/location.model';
 
@@ -14,12 +14,12 @@ const REMOVE_FAVORITE = 'REMOVE_FAVORITE';
 const CHECK_IS_IN_FAVORITES = 'CHECK_IS_IN_FAVORITES';
 const LOAD_WEATHER_FROM_FAVORITES = 'LOAD_WEATHER_FROM_FAVORITES';
 const AUTOCOMPLETE_WEATHER_DATA = "AUTOCOMPLETE_WEATHER_DATA";
-const AUTOCOMPLETE_WEATHER_DATA_SUCCESSS="AUTOCOMPLETE_WEATHER_DATA_SUCCESSS"
+const AUTOCOMPLETE_WEATHER_DATA_SUCCESSS = "AUTOCOMPLETE_WEATHER_DATA_SUCCESSS"
 const AUTOCOMPLETE_WEATHER_DATA_ERROR = "AUTOCOMPLETE_WEATHER_DATA_ERROR"
-const  GET_DAILY_WEATHER = "GET_DAILY_WEATHER"
-const  GET_DAILY_WEATHER_SUCCESS = "GET_DAILY_WEATHER_SUCCESS"
-const  GET_DAILY_WEATHER_ERROR= "GET_DAILY_WEATHER_ERROR"
-const CLEAR_AUTO_COMPLETE ="CLEAR_AUTO_COMPLETE"
+const GET_DAILY_WEATHER = "GET_DAILY_WEATHER"
+const GET_DAILY_WEATHER_SUCCESS = "GET_DAILY_WEATHER_SUCCESS"
+const GET_DAILY_WEATHER_ERROR = "GET_DAILY_WEATHER_ERROR"
+const CLEAR_AUTO_COMPLETE = "CLEAR_AUTO_COMPLETE"
 
 
 
@@ -34,7 +34,7 @@ export const ShowDailySpinner = createAction(
 
 export const UpdateForecastWeather = createAction(
   UPDATE_FORECAST_WEATHER,
-  props<{ currentWeatherForecast: WeatherForecast[] }>()
+  props<{ currentWeatherForecast: DailyForecast[] }>()
 );
 
 export const ShowForecastSpinner = createAction(
@@ -52,14 +52,8 @@ export const RemoveForecastSpinner = createAction(
 export const AddFavorite = createAction(
   ADD_FAVORITE,
   props<{
-    favoritesDailyWeather: {
-      fetchedCityIndex: number,
-      weatherText: string,
-      dailyTemperature: number,
-      weatherIcon: string,
-      fetchedCityName: string
-    },
-    currentWeatherForecast: WeatherForecast[]
+    favoritesDailyWeather: DailyWeather,
+    currentWeatherForecast: DailyForecast[]
   }>()
 );
 
@@ -95,7 +89,7 @@ export const autocompleteWeatherDataError = createAction(
 
 export const getDailyWeather = createAction(
   GET_DAILY_WEATHER,
-  props<{ fetchedCityIndex: any, selected: Autocomplete }>()
+  props<{ fetchedCityIndex: number, selected: Autocomplete }>()
 );
 
 export const getDailyWeatherSuccess = createAction(
@@ -107,23 +101,24 @@ export const getDailyWeatherError = createAction(
   GET_DAILY_WEATHER_ERROR
 );
 
-export const getForecastWeather = createAction(
-  "getForecastWeather",
-  props<{ fetchedCityIndex: any, selected: Autocomplete }>()
+export const getCurrentCityByGeoLocation = createAction(
+  "getCurrentCityByGeoLocation",
 );
 
-export const getForecastWeatherSuccess = createAction(
-  "getForecastWeather SUCCESS",
-  props<{ city: City }>()
-);
+// export const getForecastWeatherSuccess = createAction(
+//   "getForecastWeather SUCCESS",
+//   props<{ city: City }>()
+// );
 
-export const getForecastWeatherError = createAction(
-  "getForecastWeather ERROR"
-);
+// export const getForecastWeatherError = createAction(
+//   "getForecastWeather ERROR"
+// );
 
 
 export const clearAllAutocomplete = createAction(
   CLEAR_AUTO_COMPLETE
 );
+
+
 
 
