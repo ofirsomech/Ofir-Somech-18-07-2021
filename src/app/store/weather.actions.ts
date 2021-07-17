@@ -92,6 +92,11 @@ export const getDailyWeather = createAction(
   props<{ fetchedCityIndex: number, selected: Autocomplete }>()
 );
 
+export const getForcastWeather = createAction(
+  "getForcastWeather",
+  props<{ fetchedCityIndex: number, selected: Autocomplete }>()
+);
+
 export const getDailyWeatherSuccess = createAction(
   GET_DAILY_WEATHER_SUCCESS,
   props<{ city: City }>()
@@ -105,6 +110,15 @@ export const getCurrentCityByGeoLocation = createAction(
   "getCurrentCityByGeoLocation",
 );
 
+export const getCityDailyAndForcast = createAction(
+  "getCityDailyAndForcast",
+  props<{ fetchedCityIndex: number, selected: Autocomplete }>()
+);
+
+export const changeDegreeState = createAction(
+  "changeDegreeState"
+);
+
 // export const getForecastWeatherSuccess = createAction(
 //   "getForecastWeather SUCCESS",
 //   props<{ city: City }>()
@@ -113,6 +127,8 @@ export const getCurrentCityByGeoLocation = createAction(
 // export const getForecastWeatherError = createAction(
 //   "getForecastWeather ERROR"
 // );
+
+
 
 
 export const clearAllAutocomplete = createAction(

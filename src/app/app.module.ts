@@ -11,28 +11,17 @@ import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { MaterialModule } from './modules/material/material.module';
-import { SharedModule } from './modules/shared/shared.module';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import {MatTableModule} from '@angular/material/table';
-import { AutocompleteComponent } from './shared/autocomplete/autocomplete.component';
 import { HomeComponent } from './componnents/home/home.component';
-import { CardComponent } from './shared/card/card.component';
 import { FavoriteComponent } from './componnents/favorite/favorite.component';
 import { NavbarComponent } from './componnents/navbar/navbar.component';
+import { SharedModule } from './modules/shared/shared.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AutocompleteComponent,
     HomeComponent,
-    CardComponent,
-    // LoaderComponent,
     FavoriteComponent,
-    NavbarComponent
+    NavbarComponent,
 
   ],
   imports: [
@@ -47,10 +36,10 @@ import { NavbarComponent } from './componnents/navbar/navbar.component';
       positionClass: 'toast-top-right',
       preventDuplicates: false
     }),
-    MaterialModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
-    NoopAnimationsModule
+    NoopAnimationsModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent],

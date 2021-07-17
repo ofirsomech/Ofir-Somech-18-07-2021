@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 import { EMPTY, from, of } from 'rxjs';
-import { map, mergeMap, catchError, switchMap, tap } from 'rxjs/operators';
+import { map, mergeMap, catchError, switchMap, tap, delay } from 'rxjs/operators';
 import * as actions from './weather.actions';
 
 import { WeatherService } from '../services/weather.service';
@@ -10,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Autocomplete } from '../models/autocomplete.model';
 import { AutocompleteDTO, DailyWeather } from '../models/weather.model';
 import { MapperService } from '../services/mapper.service';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 
 @Injectable()
 export class WeatherEffects implements OnInitEffects {
@@ -20,6 +20,8 @@ export class WeatherEffects implements OnInitEffects {
         private storageService: StorageService,
         private mapperService: MapperService,
         private toastr: ToastrService,
+        private store: Store,
+
     ) { }
 
     ngrxOnInitEffects(): Action {
@@ -72,8 +74,6 @@ export class WeatherEffects implements OnInitEffects {
     getCurrentCityMetadata$ = createEffect(() => this.actions$.pipe(
         ofType(actions.getCurrentCityByGeoLocation),
         switchMap(() => {
-
-            return of({ lat: 32, lng:  35 })
             const geolocationPromise = new Promise<{ lat: number, lng: number }>((result, reject) => {
                 window.navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -88,48 +88,62 @@ export class WeatherEffects implements OnInitEffects {
             return from(geolocationPromise);
         }),
         switchMap(({ lat, lng }) => {
-            console.log(lat, lng)
             return this.api.getGeolocation(lat, lng).pipe(
-                tap(v => console.log(v)),
                 map(v => ({ fetchedCityIndex: +v.Key, selected: { key: +v.Key, name: v.LocalizedName } }))
             );
         }),
         switchMap(({ fetchedCityIndex, selected }) => {
-            return [actions.getDailyWeather({ fetchedCityIndex, selected })];
+            return [actions.getCityDailyAndForcast({ fetchedCityIndex, selected })];
         })
     ));
 
     getDailyWeather$ = createEffect(() => this.actions$.pipe(
         ofType(actions.getDailyWeather),
         switchMap(({ fetchedCityIndex, selected }) => {
+            this.store.dispatch(actions.ShowDailySpinner());
             return this.api.getDailyWeather(fetchedCityIndex)
                 .pipe(
-                    map((dailyWeatherData) => ({
-                        dailyWeatherData: dailyWeatherData.map(dwDTO => this.mapperService.mapDailyWeatherDTO(dwDTO, selected)), fetchedCityIndex, selected
-                    })),
-                    catchError(err => of({ fetchedCityIndex, selected, dailyWeatherData: undefined }))
+                    map((dailyWeatherData) => dailyWeatherData.map(dwDTO => this.mapperService.mapDailyWeatherDTO(dwDTO, selected))),
+                    catchError(err => of(undefined))
                 )
         }),
-        switchMap(({ fetchedCityIndex, selected, dailyWeatherData }) => {
-
-            return this.api.getForecastWeather(fetchedCityIndex)
-                .pipe(
-                    map((data) => ({
-                        dailyWeatherData, data
-                    })),
-                    catchError(err => of({ dailyWeatherData, data: null }))
-                )
-        }
-        ),
-        switchMap(({ dailyWeatherData, data }) => {
-            if (dailyWeatherData && data?.DailyForecasts) {
+        switchMap((dailyWeatherData) => {
+            if (dailyWeatherData) {
                 return [
                     actions.UpdateDailyWeather({ currentDailyWeather: dailyWeatherData[0] }),
+                ]
+            }
+            return [actions.getDailyWeatherError()];
+        })
+    ));
+
+    getForcastWeather$ = createEffect(() => this.actions$.pipe(
+        ofType(actions.getForcastWeather),
+        switchMap(({ fetchedCityIndex }) => {
+            this.store.dispatch(actions.ShowForecastSpinner());
+            return this.api.getForecastWeather(fetchedCityIndex)
+                .pipe(
+                    catchError(err => of(null))
+                )
+        }),
+        switchMap((data) => {
+            if (data?.DailyForecasts) {
+                return [
                     actions.UpdateForecastWeather({ currentWeatherForecast: data.DailyForecasts }),
                 ]
             }
             return [actions.getDailyWeatherError()];
         })
+    ));
+
+    getCityDailyAndForcast$ = createEffect(() => this.actions$.pipe(
+        ofType(actions.getCityDailyAndForcast),
+        switchMap(({ fetchedCityIndex, selected }) => {
+            return [
+                actions.getDailyWeather({ fetchedCityIndex, selected }),
+                actions.getForcastWeather({ fetchedCityIndex, selected }),
+            ]
+        }),
     ));
 
     // getForecastWeather$ = createEffect(() => this.actions$.pipe(

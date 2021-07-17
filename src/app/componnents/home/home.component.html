@@ -1,28 +1,48 @@
-
 <div class="card align-items-center">
-    <sc-autocomplete [selectedCity]="selectedCity"></sc-autocomplete>
+    <sc-autocomplete [selectedCity]="selectedCity" [filteredOptions]="filteredCities$ | async"
+        (onSearch)="onSearch($event)" (onSelection)="onSelection($event)"></sc-autocomplete>
 </div>
 
 
 <ng-container *ngIf="a$ | async as data">
-    <div *ngIf="data.dailyWeather?.weatherText" class="card align-items-center">
+    <div *ngIf="data.dailyWeather?.weatherText && !isDailyLoading" class="card align-items-center">
         <div class="row">
             <div class="mx-auto">
-                <sc-card @fade [currentDailyWeather]="data.dailyWeather" [currentWeatherForecast]="data.weatherForcast" [isInFavorites]="isInFavorites$ | async"></sc-card>
+                <sc-card>
+                    <img src="../../../assets/icons/{{data.dailyWeather?.weatherIcon}}-s.png">
+                    <h5 class="card-title">{{data.dailyWeather?.fetchedCityName}}</h5>
+                    <h6 class="card-text">{{(data.dailyWeather?.dailyTemperature) | weatherDegree : (isCelsios$ |
+                        async)}}</h6>
+                    <h6>{{data.dailyWeather?.weatherText}}</h6>
+                    <button (click)="addToFavorite(data.dailyWeather,data.weatherForcast)"
+                        *ngIf="!(isInFavorites$ | async)">add to favorite</button>
+                    <button (click)="removeFavorite(data.dailyWeather)" *ngIf="isInFavorites$ | async">remove from
+                        favorite</button>
+                </sc-card>
             </div>
-          </div>
+        </div>
+    </div>
+    <div *ngIf="isDailyLoading" class="card align-items-center">
+        locading
     </div>
     <div>
         <h2 class="five-days-label">5 Days</h2>
-      </div>
-    <div class="row items-center" @fade>
-        <div  *ngFor="let day of data.weatherForcast"  class="card align-items-center" style="width: 18rem;">
-            <sc-card *ngIf="!isForecastLoading" [isDaily]='true' [day]='day'></sc-card>
+    </div>
+    <div *ngIf="!isForecastLoading" class="row items-center">
+        <div *ngFor="let day of data.weatherForcast" class="card align-items-center" style="width: 18rem;">
+            <sc-card>
+                <img src="../../../assets/icons/{{day?.Day?.Icon}}-s.png">
+                <h5 class="card-title">{{day?.Date | date: 'dd/MM/yyyy'}}</h5>
+                <h6 class="card-text">{{day?.Temperature?.Minimum?.Value| weatherDegree : (isCelsios$ |
+                    async) }} /
+                    {{day?.Temperature?.Maximum?.Value| weatherDegree : (isCelsios$ |
+                        async)}}</h6>
+            </sc-card>
         </div>
-        <!-- <sc-loader *ngIf="isForecastLoading"></sc-loader> -->
+    </div>
+    <div *ngIf="isForecastLoading" class="card align-items-center">
+        locading 1111
     </div>
 </ng-container>
 
 <!-- <p>{{currentDailyWeather$ | async}}</p> -->
-
-

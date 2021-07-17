@@ -13,6 +13,9 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="/favorite" routerLinkActive="active">Favorites</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="changeDagree()">{{isCelsios ? "celsius":"f"}}</a>
+        </li>
       </ul>
     </div>
   </nav>

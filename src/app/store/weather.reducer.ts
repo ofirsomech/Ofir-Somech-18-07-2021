@@ -16,6 +16,8 @@ export interface State {
   currentWeatherForecast: DailyForecast[],
   favoritesDailyWeather: DailyWeather[],
   favoritesForecastWeather: DailyForecast[][],
+  isCelsius:boolean
+  
 }
 
 const initialState: State = {
@@ -24,7 +26,7 @@ const initialState: State = {
     fetchedCityName: '',
     // dailyTemperature: null,
     weatherText: '',
-    weatherIcon: ''
+    weatherIcon: '',
   },
   autocompleteData: [],
   isDailyLoading: false,
@@ -33,7 +35,8 @@ const initialState: State = {
   favoritesList: [],
   isInFavorites: false,
   favoritesDailyWeather: [],
-  favoritesForecastWeather: []
+  favoritesForecastWeather: [],
+  isCelsius : true
 }
 
 export const mainState = createFeatureSelector<State>("weather");
@@ -45,6 +48,7 @@ export const getForecastLoading = createSelector(mainState, (s) => s.isForecastL
 export const getDailyLoading = createSelector(mainState, (s) => s.isDailyLoading)
 export const getFavoritesDailyWeather = createSelector(mainState, (s) => s.favoritesDailyWeather)
 export const isInFavorites = createSelector(mainState, (s) => s.isInFavorites)
+export const getIsCelsiusDagree = createSelector(mainState, (s) => s.isCelsius)
 
 
 const weatherReducer = createReducer(
@@ -78,7 +82,7 @@ const weatherReducer = createReducer(
   on(WeatherActions.AddFavorite, (state, action) => {
     return ({
       ...state,
-      // favoritesList: [...state.favoritesList, action.favoritesDailyWeather.fetchedCityIndex],
+      favoritesList: action.favoritesDailyWeather.fetchedCityIndex ? [...state.favoritesList, action.favoritesDailyWeather.fetchedCityIndex] : state.favoritesList,
       isInFavorites: true,
       favoritesDailyWeather: [...state.favoritesDailyWeather, action.favoritesDailyWeather],
       favoritesForecastWeather: [...state.favoritesForecastWeather, action.currentWeatherForecast]
@@ -117,7 +121,10 @@ const weatherReducer = createReducer(
   on(WeatherActions.getDailyWeatherSuccess, (state, action) => ({
     ...state,
     currentDailyWeather: action.city,
-  }))
+  })),
+  on(WeatherActions.changeDegreeState, (state, action) => ({
+    ...state,
+    isCelsius: !state.isCelsius  }))
 );
 
 export function reducer(state: State = initialState, action: Action) {

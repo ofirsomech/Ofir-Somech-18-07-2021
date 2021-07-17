@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { changeDegreeState } from 'src/app/store/weather.actions';
+import { getIsCelsiusDagree } from 'src/app/store/weather.reducer';
 
 @Component({
   selector: 'navbar',
@@ -7,9 +10,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor() { }
+  isCelsios: boolean = true;
+  constructor(private store: Store) { }
 
   ngOnInit(): void {
+    this.store.select(getIsCelsiusDagree).subscribe(celsios => this.isCelsios = celsios);
   }
 
+  changeDagree(){
+    this.store.dispatch(changeDegreeState());
+  }
 }
