@@ -5,10 +5,9 @@ import { map, mergeMap, catchError, switchMap, tap, delay } from 'rxjs/operators
 import * as actions from './weather.actions';
 
 import { WeatherService } from '../services/weather.service';
-import { StorageService } from '../services/local-storage.service';
+import { StorageService } from '../services/storage.service';
 import { ToastrService } from 'ngx-toastr';
 import { Autocomplete } from '../models/autocomplete.model';
-import { AutocompleteDTO, DailyWeather } from '../models/weather.model';
 import { MapperService } from '../services/mapper.service';
 import { Action, Store } from '@ngrx/store';
 
@@ -55,14 +54,11 @@ export class WeatherEffects implements OnInitEffects {
                     tap((autocompleteData: Autocomplete[]) => this.storageService.setCities(querySearch, autocompleteData)),
                     catchError(_err => {
                         console.log(_err);
-
                         return of(undefined)
                     })
                 )
         }),
         map((autocomplete: Autocomplete[] | undefined) => {
-            console.log(autocomplete);
-
             if (autocomplete) {
                 return actions.autocompleteWeatherDataSuccess({ autocomplete });
             }
@@ -146,28 +142,6 @@ export class WeatherEffects implements OnInitEffects {
         }),
     ));
 
-    // getForecastWeather$ = createEffect(() => this.actions$.pipe(
-    //     ofType(actions.getDailyWeather),
-    //     switchMap(({ fetchedCityIndex, selected }) => {
-    //         console.log(fetchedCityIndex);
-
-    //         return this.api.getForecastWeather(fetchedCityIndex)
-    //             .pipe(
-    //                 map((forecastWeatherData) => forecastWeatherData.map(dwDTO => this.mapperService.mapDailyWeatherDTO(dwDTO, selected))),
-    //                 catchError(err => of(undefined))
-    //             )
-    //     }
-    //     ),
-    //     map((dailyWeatherData: DailyWeather[] | undefined) => {
-    //         console.log(dailyWeatherData);
-
-    //         if (dailyWeatherData) {
-    //             return actions.UpdateDailyWeather({ currentDailyWeather: dailyWeatherData[0] })
-    //         }
-    //         return actions.getDailyWeatherError();
-    //     })
-    // ));
-
     async checkPreviousSearchs(query: string) {
         for (let i = 0; i < query.length; i++) {
             const element = query.substr(0, i + 1);
@@ -175,10 +149,7 @@ export class WeatherEffects implements OnInitEffects {
             if (cities && cities.length < 10) {
                 return element;
             }
-
         }
         return null;
     }
-
-
 }

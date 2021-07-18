@@ -8,7 +8,7 @@
     <div *ngIf="data.dailyWeather?.weatherText && !isDailyLoading" class="card-style align-items-center">
         <div class="row">
             <div class="mx-auto">
-                <h1 class="five-days-label">Today</h1>
+                <h1 class="today">Today</h1>
                 <sc-card @fade>
                     <daily-weather-card [data]="data"
                         (addFavorite)="addToFavorite(data.dailyWeather,data.weatherForcast)"

@@ -22,9 +22,7 @@ export interface State {
 
 const initialState: State = {
   currentDailyWeather: {
-    // fetchedCityIndex: null,
     fetchedCityName: '',
-    // dailyTemperature: null,
     weatherText: '',
     weatherIcon: '',
   },

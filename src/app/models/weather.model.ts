@@ -1,3 +1,7 @@
+export interface WeatherData {
+  dailyWeather: DailyWeather | undefined;
+  weatherForcast: DailyForecast[] | undefined;
+}
 export interface DailyWeatherDTO {
   LocalObservationDateTime: Date;
   EpochTime: number;

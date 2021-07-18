@@ -20,6 +20,11 @@ const GET_DAILY_WEATHER = "GET_DAILY_WEATHER"
 const GET_DAILY_WEATHER_SUCCESS = "GET_DAILY_WEATHER_SUCCESS"
 const GET_DAILY_WEATHER_ERROR = "GET_DAILY_WEATHER_ERROR"
 const CLEAR_AUTO_COMPLETE = "CLEAR_AUTO_COMPLETE"
+const GET_FORCAST_WEATHER = "GET_FORCAST_WEATHER"
+const GET_CURRENT_CITY_BY_GEO_LOCATION = "GET_CURRENT_CITY_BY_GEO_LOCATION"
+const GET_CITY_DAILY_AND_FORCAST = "GET_CITY_DAILY_AND_FORCAST"
+const CHANGE_DAGREE_STATE = "CHANGE_DAGREE_STATE"
+
 
 
 
@@ -93,7 +98,7 @@ export const getDailyWeather = createAction(
 );
 
 export const getForcastWeather = createAction(
-  "getForcastWeather",
+  GET_FORCAST_WEATHER,
   props<{ fetchedCityIndex: number, selected: Autocomplete }>()
 );
 
@@ -107,29 +112,17 @@ export const getDailyWeatherError = createAction(
 );
 
 export const getCurrentCityByGeoLocation = createAction(
-  "getCurrentCityByGeoLocation",
+  GET_CURRENT_CITY_BY_GEO_LOCATION,
 );
 
 export const getCityDailyAndForcast = createAction(
-  "getCityDailyAndForcast",
+  GET_CITY_DAILY_AND_FORCAST,
   props<{ fetchedCityIndex: number, selected: Autocomplete }>()
 );
 
 export const changeDegreeState = createAction(
-  "changeDegreeState"
+  CHANGE_DAGREE_STATE
 );
-
-// export const getForecastWeatherSuccess = createAction(
-//   "getForecastWeather SUCCESS",
-//   props<{ city: City }>()
-// );
-
-// export const getForecastWeatherError = createAction(
-//   "getForecastWeather ERROR"
-// );
-
-
-
 
 export const clearAllAutocomplete = createAction(
   CLEAR_AUTO_COMPLETE

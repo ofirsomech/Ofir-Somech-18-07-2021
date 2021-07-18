@@ -16,19 +16,6 @@ export class StorageService {
       this.setCitiesDatabase()
   }
 
-  // setCities(searchedQuery: string, cities: Autocomplete[]) {
-  //   window.localStorage.setItem(searchedQuery, JSON.stringify(cities));
-  // }
-
-  // getCities(searchedQuery: string): Autocomplete[] | undefined {
-  //   const citiesJsonStr = window.localStorage.getItem(searchedQuery);
-  //   return citiesJsonStr ? JSON.parse(citiesJsonStr) : undefined;
-  // }
-
-  // isKeyExist(key: string) {
-  //   return localStorage.getItem(key)
-  // }
-
 
   async setCities(searchedQuery: string, cities: Autocomplete[]): Promise<boolean> {
     return await this.getTransactionCitiesDatabase<boolean>((store, res, rej) => {

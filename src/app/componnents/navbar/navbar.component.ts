@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { Component, ElementRef, HostBinding, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { changeDegreeState } from 'src/app/store/weather.actions';
 import { getIsCelsiusDagree } from 'src/app/store/weather.reducer';

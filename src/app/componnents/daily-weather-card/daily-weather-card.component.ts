@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DailyForecast, DailyWeather } from 'src/app/models/weather.model';
+import { DailyForecast, DailyWeather, WeatherData } from 'src/app/models/weather.model';
 
 @Component({
   selector: 'daily-weather-card',
@@ -7,10 +7,7 @@ import { DailyForecast, DailyWeather } from 'src/app/models/weather.model';
   styleUrls: ['./daily-weather-card.component.scss']
 })
 export class DailyWeatherCardComponent implements OnInit {
-  @Input() data: {
-    dailyWeather: DailyWeather | undefined,
-    weatherForcast: DailyForecast[] | undefined
-  } | undefined;
+  @Input() data: WeatherData | undefined;
 
   @Output() addFavorite: EventEmitter<string> = new EventEmitter();
   @Output() removeFromFavorite: EventEmitter<string> = new EventEmitter();
@@ -28,14 +25,10 @@ export class DailyWeatherCardComponent implements OnInit {
 
   addToFavorite() {
     this.addFavorite.emit();
-    // if (this.currentDailyWeather && this.currentWeatherForecast)
-    //   this.store.dispatch(actions.AddFavorite({ favoritesDailyWeather: this.currentDailyWeather, currentWeatherForecast: this.currentWeatherForecast }))
   }
 
   removeFavorite() {
     this.removeFromFavorite.emit();
-    // if (this.currentDailyWeather?.fetchedCityIndex)
-    //   this.store.dispatch(actions.RemoveFavorite({ fetchedCityIndex: this.currentDailyWeather.fetchedCityIndex }))
   }
 
 }

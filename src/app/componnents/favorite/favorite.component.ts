@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { State, Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { DailyForecast, DailyWeather } from 'src/app/models/weather.model';
+import { DailyForecast, DailyWeather, WeatherData } from 'src/app/models/weather.model';
 import { RemoveFavorite } from 'src/app/store/weather.actions';
 import { getCurrentDailyWeather, getCurrentWeatherForecast, getFavoritesDailyWeather, getIsCelsiusDagree, isInFavorites } from 'src/app/store/weather.reducer';
 
@@ -13,10 +13,7 @@ import { getCurrentDailyWeather, getCurrentWeatherForecast, getFavoritesDailyWea
 })
 export class FavoriteComponent implements OnInit {
   favoritesDailyWeather: DailyWeather[] =[];
-  data$!: Observable<{
-    dailyWeather: DailyWeather | undefined,
-    weatherForcast: DailyForecast[] | undefined
-  }>;
+  data$!: Observable<WeatherData>;
   isCelsios$: Observable<boolean> | undefined;
   isInFavorites$: Observable<boolean> | undefined;
   constructor(private store: Store) { }
@@ -31,9 +28,7 @@ export class FavoriteComponent implements OnInit {
       })),
     )
 
-    this.isInFavorites$ = this.store.select(isInFavorites).pipe(
-      tap(v => console.log(v))
-    )
+    this.isInFavorites$ = this.store.select(isInFavorites);
   }
 
   removeFavorite(currentDailyWeather: DailyWeather) {

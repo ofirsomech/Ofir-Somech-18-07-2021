@@ -4,12 +4,13 @@ import { Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map, skipWhile, tap } from 'rxjs/operators';
 import { Autocomplete } from 'src/app/models/autocomplete.model';
-import { Mode } from 'src/app/models/mode.enum';
-import { DailyForecast, DailyWeather, DailyWeatherDTO, ForecastsWeather } from 'src/app/models/weather.model';
+import { DailyForecast, DailyWeather, DailyWeatherDTO, ForecastsWeather , WeatherData } from 'src/app/models/weather.model';
 import { WeatherService } from 'src/app/services/weather.service';
 import { fade } from 'src/app/modules/shared/animations/animations';
 import { AddFavorite, autocompleteWeatherData, CheckIsInFavorites, getCityDailyAndForcast, RemoveFavorite } from 'src/app/store/weather.actions';
 import { getAutocompleteSelector, getCurrentDailyWeather, getCurrentWeatherForecast, getDailyLoading, getForecastLoading, getIsCelsiusDagree, isInFavorites } from 'src/app/store/weather.reducer';
+
+
 
 @Component({
   selector: 'home',
@@ -24,10 +25,7 @@ export class HomeComponent implements OnInit {
   selectedCity: Autocomplete = {};
   filteredCities$!: Observable<Autocomplete[]>;
   ilteredCities: Autocomplete[] = [];
-  data$!: Observable<{
-    dailyWeather: DailyWeather | undefined,
-    weatherForcast: DailyForecast[] | undefined
-  }>;
+  data$!: Observable<WeatherData>;
   currentDailyWeather: DailyWeather | undefined;
   DailyForecasts: ForecastsWeather | undefined
 
@@ -58,7 +56,6 @@ export class HomeComponent implements OnInit {
     this.filteredCities$ = this.store.select(getAutocompleteSelector).pipe(
       map(value => value || []),
     );
-    // this.store.select(getForecastLoading).subscribe(loader => this.isForecastLoading = loader);
   }
 
   onSearch(queryString: string) {
