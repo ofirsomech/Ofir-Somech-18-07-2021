@@ -17,6 +17,8 @@ import { NavbarComponent } from './componnents/navbar/navbar.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { DailyWeatherCardComponent } from './componnents/daily-weather-card/daily-weather-card.component';
 import { ForecastWeatherCardComponent } from './componnents/forecast-weather-card/forecast-weather-card.component';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from 'src/environments/environment';
 
 
 @NgModule({
@@ -35,6 +37,10 @@ import { ForecastWeatherCardComponent } from './componnents/forecast-weather-car
     HttpClientModule,
     BrowserAnimationsModule,
     StoreModule.forRoot(fromApp.appReducer),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    }),
     EffectsModule.forRoot([WeatherEffects]),
     ToastrModule.forRoot({
       timeOut: 3000,

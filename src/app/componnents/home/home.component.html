@@ -21,17 +21,20 @@
     <div *ngIf="isDailyLoading" class="card align-items-center">
         <sc-loader></sc-loader>
     </div>
-    <div *ngIf="!isForecastLoading">
-        <h1 class="five-days-label">This Week</h1>
-    </div>
-    <div *ngIf="!isForecastLoading" class="row items-center">
-        <div *ngFor="let day of data.weatherForcast" class="align-items-center" style="width: 18rem;">
-            <sc-card @fade>
-                <forecast-weather-card [day]="day" [isCelsios]="isCelsios$ | async"></forecast-weather-card>
-            </sc-card>
+    <div class="forecast">
+        <div *ngIf="!isForecastLoading">
+            <h1 class="week-label">This Week</h1>
+        </div>
+        <div *ngIf="!isForecastLoading" class="row items-center">
+            <div *ngFor="let day of data.weatherForcast" class="align-items-center" style="width: 18rem;">
+                <sc-card @fade>
+                    <forecast-weather-card [day]="day" [isCelsios]="isCelsios$ | async"></forecast-weather-card>
+                </sc-card>
+            </div>
+        </div>
+        <div *ngIf="isForecastLoading" class="card align-items-center">
+            <sc-loader></sc-loader>
         </div>
     </div>
-    <div *ngIf="isForecastLoading" class="card align-items-center">
-        <sc-loader></sc-loader>
-    </div>
+
 </ng-container>
