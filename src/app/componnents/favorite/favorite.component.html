@@ -1,25 +1,21 @@
-<div class="container-fluid image">
-  <div class="row">
-    <ng-container *ngIf="favoritesDailyWeather.length > 0; else showNoFavorites">
-      <div *ngFor="let favorite of favoritesDailyWeather">
-        <sc-card class="col-lg-2 col-md-6 col-sm-10 card custom-margin-left mr-5 mt-5">
-          <img src="../../../assets/icons/{{favorite?.weatherIcon}}-s.png">
-          <h5 class="card-title">{{favorite?.fetchedCityName}}</h5>
-          <h6 class="card-text">{{(favorite?.dailyTemperature) | weatherDegree : true}}</h6>
-          <h6>{{favorite?.weatherText}}</h6>
-          <button (click)="removeFavorite(favorite)">remove from favorite</button>
-        </sc-card>
+
+    <ng-container *ngIf="data$ | async as data">
+      <ng-container *ngIf="favoritesDailyWeather.length > 0; else showNoFavorites">
+        <div class="row items-center">
+          <div *ngFor="let favorite of favoritesDailyWeather" class="card align-items-center" style="width: 18rem;">
+              <sc-card>
+                <daily-weather-card [data]="data" (removeFromFavorite)="removeFavorite(favorite)"
+                [isInFavorites]="isInFavorites$ | async" [isCelsios]="isCelsios$ | async"></daily-weather-card>
+              </sc-card>
+          </div>
       </div>
+
+      </ng-container>
     </ng-container>
     <ng-template #showNoFavorites>
       <div class="card mx-auto mt-5">
-        <div class="card-body">
+        <div class="card-body text-align-center">
           <h4 class="card-text">You don't have any favorites cities, please add some.</h4>
         </div>
       </div>
     </ng-template>
-  </div>
-</div>
-
-<!-- <sc-card  class="col-lg-2 col-md-6 col-sm-10 card custom-margin-left mr-5 mt-5"
-[currentDailyWeather]="favorite" [isInFavorites]="true"> -->

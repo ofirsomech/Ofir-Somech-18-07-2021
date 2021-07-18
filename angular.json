@@ -106,7 +106,9 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "./assets/style/theme.scss",
+              "./assets/style/main.scss"
             ],
             "scripts": []
           }

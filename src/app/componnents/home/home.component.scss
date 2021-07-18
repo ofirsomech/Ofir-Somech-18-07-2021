@@ -2,16 +2,24 @@
     text-align: center;
 }
 
+
+.set-width {
+    width: 18rem;
+}
 .items-center {
     margin-left: 11%;
-}
-@media only screen and (max-width: 600px) {
+  }
+  @media only screen and (max-width: 600px) {
     .items-center {
         margin-left: 14%;
         padding: unset;
     }
+  }
+
+.card-style{
+    height: 43%;
 }
 
-.set-width {
-    width: 18rem;
+.autocomplete-style{
+    margin-right: 5%;
 }

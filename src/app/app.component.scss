@@ -1,0 +1,11 @@
+.items-center {
+    margin-left: 11%;
+  }
+  @media only screen and (max-width: 600px) {
+    .items-center {
+        margin-left: 14%;
+        padding: unset;
+    }
+  }
+
+  

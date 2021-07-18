@@ -1,13 +1,14 @@
-<div class="card align-items-center">
+<div class="card align-items-center autocomplete-style">
     <sc-autocomplete [selectedCity]="selectedCity" [filteredOptions]="filteredCities$ | async"
         (onSearch)="onSearch($event)" (onSelection)="onSelection($event)"></sc-autocomplete>
 </div>
 
 
 <ng-container *ngIf="data$ | async as data">
-    <div *ngIf="data.dailyWeather?.weatherText && !isDailyLoading" class="card align-items-center">
+    <div *ngIf="data.dailyWeather?.weatherText && !isDailyLoading" class="card-style align-items-center">
         <div class="row">
             <div class="mx-auto">
+                <h1 class="five-days-label">Today</h1>
                 <sc-card @fade>
                     <daily-weather-card [data]="data"
                         (addFavorite)="addToFavorite(data.dailyWeather,data.weatherForcast)"
@@ -20,11 +21,11 @@
     <div *ngIf="isDailyLoading" class="card align-items-center">
         <sc-loader></sc-loader>
     </div>
-    <div>
-        <h2 class="five-days-label">5 Days</h2>
+    <div *ngIf="!isForecastLoading">
+        <h1 class="five-days-label">This Week</h1>
     </div>
     <div *ngIf="!isForecastLoading" class="row items-center">
-        <div *ngFor="let day of data.weatherForcast" class="card align-items-center" style="width: 18rem;">
+        <div *ngFor="let day of data.weatherForcast" class="align-items-center" style="width: 18rem;">
             <sc-card @fade>
                 <forecast-weather-card [day]="day" [isCelsios]="isCelsios$ | async"></forecast-weather-card>
             </sc-card>
@@ -34,9 +35,3 @@
         <sc-loader></sc-loader>
     </div>
 </ng-container>
-
-<!-- <p>{{currentDailyWeather$ | async}}</p> -->
-
-<!-- <sc-card [currentDailyWeather]="data.dailyWeather" [currentWeatherForecast]="data.weatherForcast"
-[isInFavorites]="isInFavorites$ | async" [isC]="isCelsios$ | async">
-</sc-card> -->
